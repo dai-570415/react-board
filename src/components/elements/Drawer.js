@@ -1,30 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-
-const Open = styled.div`
-  display: block;
-  text-align: center;
-  color: #fff;
-  top: 75px;
-  left: 50px;
-  position: fixed;
-`;
-const OpenButton = styled.div`
-  text-align: center;
-  color: #fff;
-  margin: 0 auto;
-  top: 50px;
-  left: 50px;
-  position: fixed;
-`;
-const CloseButton = styled.div`
-  text-align: center;
-  color: #fff;
-  margin: 0 auto;
-  top: 50px;
-  left: 50px;
-  position: fixed;
-`;
 
 const Drawer = () => {
   const [open, setOpen] = useState(false);
@@ -42,18 +16,21 @@ const Drawer = () => {
   }
 
   return (
-    <React.Fragment>
-      {!open && <OpenButton onClick={openFunc}>open</OpenButton>}
+    <>
+      {!open && <div onClick={openFunc}>open</div>}
       
       {open && (
-        <React.Fragment>
-          <CloseButton onClick={closeFunc}>close</CloseButton>
-          <Open>
+        <>
+          <div onClick={closeFunc}>close</div>
+          <div>
             説明が入る
-          </Open>
-        </React.Fragment>
+          </div>
+        </>
       )}
-    </React.Fragment>
+      <style>{`
+      
+      `}</style>
+    </>
   );
 }
 

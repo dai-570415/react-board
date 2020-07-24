@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Index from './components/Index';
 import BoardIndex from './components/board/Index';
 import './assets/css/App.css';
-import './assets/css/Board.css';
 
 // head情報
 const title = 'リアルタイムチャット ホワイトボード | White board';
