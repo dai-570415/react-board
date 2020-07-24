@@ -1,68 +1,149 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# White board App
 
-## Available Scripts
+## Data download & construction
 
-In the project directory, you can run:
+```bash
+$ git clone https://github.com/dai-570415/react-board.git
 
-### `npm start`
+$ cd react-board
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+$ npm install
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+$ npm start
+```
 
-### `npm test`
+- Setting(Firebase.js)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```js
+import firebase from 'firebase/app';
+import 'firebase/database';
+import 'firebase/firestore';
+import 'firebase/auth';
 
-### `npm run build`
+const firebaseConfig = {
+    apiKey: "Your_Key",
+    authDomain: "Your_Key",
+    databaseURL: "Your_Key",
+    projectId: "Your_Key",
+    storageBucket: "Your_Key",
+    messagingSenderId: "Your_Key",
+    appId: "Your_Key",
+    measurementId: "Your_Key"
+};
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+firebase.initializeApp(firebaseConfig);
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+export default firebase;
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+以下のコードからcreate-react-app上にデータを作り変え、改良させました。
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+cf. 元コード(ミニマムなReact)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>StayHomeBoard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <script type="text/babel">
+      var firebaseConfig = {
+        apiKey: "Your_Key",
+        authDomain: "Your_Key",
+        databaseURL: "Your_Key",
+        projectId: "Your_Key",
+        storageBucket: "Your_Key",
+        messagingSenderId: "Your_Key",
+        appId: "Your_Key",
+        measurementId: "Your_Key"
+      };
+      const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+      const firebaseDb = firebaseApp.database();
+      let db = null;
 
-## Learn More
+      const Board = () => {
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+        React.useEffect(() => {
+          const params = new URL(document.location).searchParams;
+          let roomName = params.get("room_name");
+          if (!roomName) {
+            let roomName = window.prompt("please input room's name");
+            window.location.href = window.location.href + "?room_name=" + roomName;
+          }
+          db = firebaseDb.ref(roomName);
+          db.on("value", (value) => setCards(value.val()));
+        }, []);
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+        const [cards, setCards] = React.useState(null);
+        const add = () => {
+          const newPostKey = db.push().key;
+          db.update({
+            [newPostKey]: {
+              t: "wash",
+              x: Math.floor(Math.random() * (200 - 80) + 80),
+              y: Math.floor(Math.random() * (200 - 80) + 80),
+            },
+          });
+        };
+        const update = (key, card) => db.update({ [key]: card });
+        const remove = (key) => db.child(key).remove();
 
-### Code Splitting
+        const [dragging, setDragging] = React.useState({ key: "", x: 0, y: 0 });
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+        const [editMode, setEditMode] = React.useState({ key: "" });
+        const [input, setInput] = React.useState("");
 
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+        if (!cards) return <button onClick={() => add()}>add card</button>;
+        return (
+          <div
+            style={{ width: "1000px", height: "1000px", position: "relative" }}
+            onDrop={(e) => {
+              if (!dragging || !cards) return;
+              update(dragging.key, { ...cards[dragging.key], x: e.clientX - dragging.x, y: e.clientY - dragging.y });
+            }}
+            onDragOver={(e) => e.preventDefault()} // enable onDrop event
+          >
+            <button onClick={() => add()}>add card</button>
+            {Object.keys(cards).map((key) => (
+              <div
+                key={key}
+                style={{ position: "absolute", top: cards[key].y + "px", left: cards[key].x + "px" }}
+                draggable={true}
+                onDragStart={(e) => setDragging({ key, x: e.clientX - cards[key].x, y: e.clientY - cards[key].y })}
+              >
+                {editMode.key === key ? (
+                  <textarea
+                    onBlur={(e) => {
+                      update(key, { ...cards[key], t: input });
+                      setEditMode({ key: "" });
+                      setInput("");
+                    }}
+                    onChange={(e) => setInput(e.target.value)}
+                    defaultValue={cards[key].t}
+                  />
+                ) : (
+                  <div onClick={(e) => setEditMode({ key })}>{cards[key].t}</div>
+                )}
+                <button onClick={() => remove(key)}>x</button>
+              </div>
+            ))}
+          </div>
+        );
+      };
+      ReactDOM.render(<Board />, document.getElementById("root"));
+    </script>
+  </head>
+  <body>
+    <div id="root" />
+  </body>
+</html>
+```
