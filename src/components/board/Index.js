@@ -99,6 +99,7 @@ const Index = () => {
                 }}
                 onChange={(e) => setInput(e.target.value)}
                 defaultValue={cards[key].t}
+                placeholder="コメントを入力..."
               />
             ) : (
               <div onClick={(e) => setEditMode({ key })}>{cards[key].t}</div>

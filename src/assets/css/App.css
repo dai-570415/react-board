@@ -122,6 +122,7 @@ h1 img {
   margin: 0 0 15px 0;
 }
 .howto .howto-items .howto-item p {
+  text-align: justify;
   font-size: 12px;
   line-height: 1.75;
 }

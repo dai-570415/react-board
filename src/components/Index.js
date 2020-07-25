@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ScrollDown from './elements/ScrollDown';
 import Logo from '../assets/img/logo.png';
 import PostIcon from '../assets/img/post_blk.png';
 import HowToImage1 from '../assets/img/howto1.png';
@@ -24,6 +25,7 @@ const Index = () => {
           <input className="input" placeholder="スペース名を入力..." onChange={(e) => setInput(e.target.value)} />
           <Link className="link-button" to={url}><img src={PostIcon} alt="スペース名を入力..." /></Link>
         </div>
+        <ScrollDown />
       </div>
       <div className="description">
         <h3>White Board<span>とは？</span></h3>

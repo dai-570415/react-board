@@ -5,7 +5,7 @@ import BoardIndex from './components/board/Index';
 import './assets/css/App.css';
 
 // head情報
-const title = 'リアルタイムチャット ホワイトボード | White board';
+const title = 'White board';
 const description = 'このアプリはリアルタイムで書けるホワイトボードアプリです。';
 document.title = title;
 const headData = document.head.children;

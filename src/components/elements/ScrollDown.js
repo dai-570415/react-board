@@ -10,21 +10,16 @@ const ScrollDown = () => {
                 </div>
             </div>
             <style>{`
-                .arrowWrap {
-                    position: absolute;
-                    right: 47.5%;
-                    bottom: 0;
-                    height: 200px;
-                }
                 .arrowInner p {
+                    text-align: center;
                     font-size: 12px;
-                    top: 40px;
+                    top: 75px;
                     position: relative;
                 }
                 .arrow {
                     width: 1px;
                     height: 100px;
-                    margin: 50px auto 0;
+                    margin: 100px auto 0;
                     background-color: #eee;
                     position: relative;
                     overflow: hidden;
