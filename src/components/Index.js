@@ -40,7 +40,7 @@ const Index = () => {
           <div className="howto-item">
             <img src={HowToImage1} alt="スペース名を入力" />
             <h5>スペース名を入力</h5>
-            <p>好きなスペース名を入力ください。次回以降、同じスペース名を入力すると、同じ編集スペースにに移動できます。</p>
+            <p>好きなスペース名を入力ください。次回以降、同じスペース名を入力すると、同じ編集スペースに移動できます。</p>
           </div>
           <div className="howto-item">
             <img src={HowToImage2} alt="ボードを新規追加" />
